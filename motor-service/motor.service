@@ -1,0 +1,12 @@
+[Unit]
+Description=Motor service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/vroom/xbox_ctrl_w_steering.py
+WorkingDirectory=/home/pi/vroom
+User=root
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

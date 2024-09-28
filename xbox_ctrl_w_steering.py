@@ -3,14 +3,25 @@ import time
 import sys
 import evdev
 import os
+import numpy as np
 
-pwm_motor = HardwarePWM(pwm_channel=0, hz=16_000, chip=2)
+pwm_motor = HardwarePWM(pwm_channel=2, hz=16_000, chip=2) #GPIO 18
 pwm_motor.start(0) # zero duty cycle
-pwm_servo = HardwarePWM(pwm_channel=1, hz=6_667, chip=1)
-pwm_servo.start(50)
+pwm_servo = HardwarePWM(pwm_channel=3, hz=50, chip=2) #GPIO 19
+pwm_servo.start(0)
+os.system("pinctrl set 17 op dl")
+relayvalue = False
 
 for event in evdev.InputDevice("/dev/input/event13").read_loop():
-    #Filter out only events we care about (throttle & steering)
+    if event.type == evdev.ecodes.EV_KEY:
+        if event.code == evdev.ecodes.BTN_SOUTH and event.value == 1:
+            if relayvalue == True:
+                os.system("pinctrl set 17 op dl")
+                relayvalue = False
+            else:
+                os.system("pinctrl set 17 op dh")
+                relayvalue = True
+
     if event.type == evdev.ecodes.EV_ABS:
         #Drive forwards
         if event.code == evdev.ecodes.ABS_GAS:
@@ -26,8 +37,15 @@ for event in evdev.InputDevice("/dev/input/event13").read_loop():
             print(-val_speed)
         #Steer left and right
         if event.code == evdev.ecodes.ABS_X:
-            period_req = (2000 / 65535 *event.value + 500)/1e6
-            val_steering = 1/period_req # 65 / 1023 * event.value + 35
-            pwm_servo.change_frequency(val_steering)
-            print(val_steering)
-        
+            angle = 3
+            if event.value < 28000:
+                angle = np.interp(event.value, [0, 28000], [4, 3])
+                print("Left")
+            elif event.value > 36000:
+                angle = np.interp(event.value, [36000, 65535], [3, 2])
+                angle = 2
+                print("Right")
+            else:
+                angle = 3
+                print("Neutral")
+            pwm_servo.change_duty_cycle(angle)

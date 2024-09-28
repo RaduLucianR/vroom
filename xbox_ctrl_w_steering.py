@@ -43,7 +43,6 @@ for event in evdev.InputDevice("/dev/input/event13").read_loop():
                 print("Left")
             elif event.value > 36000:
                 angle = np.interp(event.value, [36000, 65535], [3, 2])
-                angle = 2
                 print("Right")
             else:
                 angle = 3

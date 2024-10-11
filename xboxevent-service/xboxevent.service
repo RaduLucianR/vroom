@@ -1,0 +1,12 @@
+[Unit]
+Description=Find the Xbox event
+After=network.target
+
+[Service]
+ExecStart=/home/pi/vroom/evprint.sh
+WorkingDirectory=/home/pi/vroom
+User=root
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

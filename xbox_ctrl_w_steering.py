@@ -33,6 +33,7 @@ while not file_w_event("./xboxevent.txt"):
 print("Controller detected!!!")
 
 for event in evdev.InputDevice(eventfile).read_loop():
+#for event in evdev.InputDevice("/dev/input/event5").read_loop():
     if event.type == evdev.ecodes.EV_KEY:
         if event.code == evdev.ecodes.BTN_SOUTH and event.value == 1:
             if relayvalue == True:

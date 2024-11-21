@@ -1,0 +1,4 @@
+gpio mode 1 pwm
+gpio pwmc 119
+gpio pwmr 100
+gpio pwm 1 100

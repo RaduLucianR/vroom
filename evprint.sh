@@ -4,7 +4,7 @@ while true
 do
   sleep 3
   script -q -c "./bin/evoutput" /tmp/evlog.txt
-  ISXBOX="$(cat /tmp/evlog.txt | grep Xbox)"
+  ISXBOX="$(cat /tmp/evlog.txt | awk '/Xbox Wireless Controller[[:space:]]*$/')"
 
   if [ -z "${ISXBOX}" ]; then
     echo "Didn't find Xbox Controller event!"

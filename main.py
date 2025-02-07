@@ -55,9 +55,8 @@ try:
 			if event.code == evdev.ecodes.ABS_Z:
 				val_speed = 65 / 1023 * event.value + 35
 				os.system(f"gpio write {BACKWARDS_PIN} {LOW}")
-				os.system(f"gpio pwm {GAS_PIN} {val_speed}")
-				#os.system("gpio pwmc 119")
 				os.system("gpio pwmr 100")
+				os.system(f"gpio pwm {GAS_PIN} {val_speed}")
 				print("forwards:", val_speed)
 			#Drive backwards
 			if event.code == evdev.ecodes.ABS_RZ:
